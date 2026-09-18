@@ -1,0 +1,17 @@
+# Generated artifacts — regenerate these, don't commit them.
+*.joblib
+data/
+reports/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Editors / OS
+.ipynb_checkpoints/
+.DS_Store

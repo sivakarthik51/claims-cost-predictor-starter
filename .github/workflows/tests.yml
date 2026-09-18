@@ -1,0 +1,71 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+# A new push to the same branch cancels the previous run.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+
+    env:
+      # One Week 4 test fails from day one by design (see README). CI sets it
+      # aside so a green tick means "everything I have written so far works".
+      # You switch it on in Week 4.
+      PYTEST_ADDOPTS: >-
+        --deselect tests/test_leakage.py::test_training_features_are_leak_free
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 3.11 is what SETUP.md asks for locally; the pinned numpy and
+      # scikit-learn have no wheels for 3.13.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      # -------------------------------------------------------------------
+      # TODO (Week 1) — this step is yours. Make it run the test suite.
+      #
+      # The tests in this repo are written with **pytest**. The step above has
+      # already installed it (it comes in requirements-dev.txt), so by the time
+      # this step runs it is there and ready to use.
+      #
+      # `run:` executes a shell command on the CI machine — the same command
+      # you would type in your own terminal. Work out what that command is from
+      # the pytest documentation rather than from us:
+      #
+      #   How to invoke pytest
+      #     https://docs.pytest.org/en/stable/how-to/usage.html
+      #
+      # Two more pages worth your time while you are there, because you will
+      # be living in this tool for the next seven weeks:
+      #
+      #   How pytest finds your tests — why the files are named test_*.py and
+      #   the functions test_*, and what happens if you rename them
+      #     https://docs.pytest.org/en/stable/explanation/goodpractices.html
+      #
+      #   Controlling what pytest prints — useful when a CI log is all you have
+      #   to debug from, which is most of the time
+      #     https://docs.pytest.org/en/stable/how-to/output.html
+      #
+      # Replace both lines below, commit on a branch, and open a PR. The check
+      # runs on the PR itself, so you will see whether you got it right before
+      # anything reaches main.
+      # -------------------------------------------------------------------
+      - name: Run the test suite
+        run: |
+          echo "::error file=.github/workflows/tests.yml::This step is still a TODO."
+          exit 1

@@ -1,0 +1,21 @@
+# Render Blueprint (Week 7).
+#
+# Render runs buildCommand on every deploy, so the data is regenerated and the
+# model retrained in the cloud — your local model.joblib is never uploaded.
+# That is also why STUDENT_SEED has to be set here: without it the deployed
+# service would be trained on a different cohort than the one you audited.
+services:
+  - type: web
+    name: claims-risk-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt && python generate_claims_data.py && python train.py
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: HIGH_COST_THRESHOLD_USD
+        value: "25000"
+      - key: STUDENT_SEED
+        value: "42"          # <-- change to your assigned seed
